@@ -1,0 +1,54 @@
+@model IEnumerable<smartcampusserviceportal.Models.ServiceRequest>
+@{
+    ViewBag.Title = "Service requests";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Service requests</h2>
+    @Html.ActionLink("New request", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No service requests have been submitted.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    <tr>
+                        <td>@request.Title</td>
+                        <td>@request.Description</td>
+                        <td><span class="badge bg-secondary">@request.Status</span></td>
+                        <td>@request.CreatedAt.ToString("g")</td>
+                        <td class="text-nowrap">
+                            @Html.ActionLink("Edit", "Edit", new { id = request.Id }, new { @class = "btn btn-sm btn-outline-primary" })
+                            @using (Html.BeginForm("Delete", "ServiceRequests", new { id = request.Id }, FormMethod.Post, new { @class = "d-inline" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this request?');">Delete</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
